@@ -1,5 +1,9 @@
 import {AxiosInstance} from 'axios'
 
+export type ApiUrls = {
+    broodURL?: string;
+    spireURL?: string;
+} 
 export interface Journals {
     bugout_user_id: string;
     created_at: string;
