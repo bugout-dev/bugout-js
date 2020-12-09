@@ -92,7 +92,7 @@ describe('User API', () => {
         await bugout.login(testUsername, testPassword)
 
         const user = bugout.user()
-        const jestJournal = await user.createJournal('jestJournalForEntry12')
+        const jestJournal = await user.createJournal('jestJournalForEntry')
 
         expect(jestJournal.data.id).toBeDefined()
 
