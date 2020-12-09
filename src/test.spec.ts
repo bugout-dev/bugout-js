@@ -1,13 +1,12 @@
 import { BugoutClient } from './index'
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 
 const testUsername = 'mher'
 const testPassword = 'pass1234'
 const bugout = BugoutClient()
 
 describe('SDK methods', () => {
-    
     test('ping', async () => {
         const ping = await bugout.ping()
 
@@ -15,15 +14,14 @@ describe('SDK methods', () => {
             brood: {
                 body: expect.any(Object),
                 url: expect.any(String),
-                code:  expect.any(Number),
+                code: expect.any(Number),
             },
             spire: {
                 body: expect.any(Object),
                 url: expect.any(String),
-                code:  expect.any(Number),
-            }
+                code: expect.any(Number),
+            },
         }))
-
     })
 
     test('login existing user', async () => {
@@ -35,8 +33,7 @@ describe('SDK methods', () => {
         }))
     })
     test('user actions', () => {
-
-        const user = bugout.user();
+        const user = bugout.user()
 
         expect(user.getAllJournals).toBeDefined()
         expect(user.createJournal).toBeDefined()
@@ -57,11 +54,10 @@ describe('User API', () => {
     test('journal', async () => {
         await bugout.login(testUsername, testPassword)
 
-        const user = bugout.user();
+        const user = bugout.user()
         const jestJournal = await user.createJournal('jestJournal')
         const journals = await user.getAllJournals()
         const deleteJournal = await user.deleteJournal(jestJournal.data.id)
-
 
         expect(jestJournal.data).toBeDefined()
 
@@ -74,9 +70,8 @@ describe('User API', () => {
             updated_at: expect.any(String),
         }))
 
-        
         expect(journals.data).toBeDefined()
-        
+
         expect(journals.data).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
@@ -86,9 +81,9 @@ describe('User API', () => {
                     id: expect.any(String),
                     name: expect.any(String),
                     updated_at: expect.any(String),
-                })
-            ])
-            )
+                }),
+            ]),
+        )
 
         expect(deleteJournal.data.id).toEqual(jestJournal.data.id)
     })
@@ -96,31 +91,29 @@ describe('User API', () => {
     test('entry', async () => {
         await bugout.login(testUsername, testPassword)
 
-        const user = bugout.user();
+        const user = bugout.user()
         const jestJournal = await user.createJournal('jestJournalForEntry12')
 
         expect(jestJournal.data.id).toBeDefined()
 
-
-
         const jestEntry = await user.createEntry(jestJournal.data.id, {
             title: 'jestEntry1',
-            content: 'jestContent'
+            content: 'jestContent',
         })
 
         const updateEntry = await user.updateEntry(
-            jestJournal.data.id, 
-            jestEntry.data.id, 
+            jestJournal.data.id,
+            jestEntry.data.id,
             {
                 title: 'jestUpdateEntry',
-                content: 'jestUpdateContent'
+                content: 'jestUpdateContent',
             },
         )
         const deleteEntry = await user.deleteEntry(
-            jestJournal.data.id, 
+            jestJournal.data.id,
             jestEntry.data.id,
         )
-        
+
         await user.deleteJournal(jestJournal.data.id)
         expect(jestEntry.data).toBeDefined()
         expect(jestEntry.data.title).toEqual('jestEntry1')
@@ -133,51 +126,51 @@ describe('User API', () => {
     test('tags', async () => {
         await bugout.login(testUsername, testPassword)
 
-        const user = bugout.user();
+        const user = bugout.user()
         const jestJournal = await user.createJournal('jestJournalForTags')
-        const jestEntry = await user.createEntry(jestJournal.data.id,{
+        const jestEntry = await user.createEntry(jestJournal.data.id, {
             title: 'jestEntryTag',
-            content: 'jestContentTag'
+            content: 'jestContentTag',
         })
         const tag = await user.createTag(
-            jestJournal.data.id, 
-            jestEntry.data.id, 
+            jestJournal.data.id,
+            jestEntry.data.id,
             ['jestTag'],
         )
         const tags = await user.getTags(
-            jestJournal.data.id, 
-            jestEntry.data.id
+            jestJournal.data.id,
+            jestEntry.data.id,
         )
         const deleteTag = await user.deleteTags(
-            jestJournal.data.id, 
-            jestEntry.data.id, 
+            jestJournal.data.id,
+            jestEntry.data.id,
             'jestTag',
         )
-        
+
         await user.deleteEntry(
-            jestJournal.data.id, 
+            jestJournal.data.id,
             jestEntry.data.id,
         )
         await user.deleteJournal(jestJournal.data.id)
 
         expect(tag.data).toEqual(
             expect.arrayContaining([{
-                name: 'jestTag'
-            }])
+                name: 'jestTag',
+            }]),
         )
         expect(tags.data).toEqual(
             expect.objectContaining({
                 journal_id: jestJournal.data.id,
-                entry_id:  jestEntry.data.id,
+                entry_id: jestEntry.data.id,
                 tags: expect.any(Array),
-            })
+            }),
         )
         expect(deleteTag.data).toEqual(
             expect.objectContaining({
                 journal_id: jestJournal.data.id,
-                entry_id:  jestEntry.data.id,
+                entry_id: jestEntry.data.id,
                 tags: expect.any(Array),
-            })
+            }),
         )
     })
 })
