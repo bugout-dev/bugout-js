@@ -4,9 +4,14 @@
         "@typescript-eslint/indent": ["error", 4],
         "@typescript-eslint/semi": [2, "never"],
         "@typescript-eslint/no-throw-literal": 0,
-        "max-len": 0,
+        "max-len": 0
+    },
+    "env": {
+        "node": true,
+        "jest": true
     },
     "parserOptions": {
-        "project": "./tsconfig.json"
+        "project": "./tsconfig.json",
+        "createDefaultProgram": true
     }
 }
