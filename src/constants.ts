@@ -1,2 +1,2 @@
-export const BROODURL = 'https://auth.bugout.dev'
-export const SPIREURL = 'https://spire.bugout.dev'
+export const bugoutBroodUrl = "https://auth.bugout.dev"
+export const bugoutSpiredUrl = "https://spire.bugout.dev"
