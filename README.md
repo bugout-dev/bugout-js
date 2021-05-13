@@ -10,7 +10,7 @@ JavaScript client library for Bugout API
 npm install --save @bugout/bugout-js
 ```
 
--   Example of usage, just fill `token`, `group_id`, `journal_id` and `entry_id` with proper values from your account. Or remove unnecessary variables and API calls.
+-   Example of usage, just fill `token`, `journal_id` and `entry_id` with proper values from your account. Or remove unnecessary variables and API calls.
 
 ```typescript
 import BugoutClient, { BugoutTypes } from "@bugout/bugout-js"
