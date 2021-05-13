@@ -41,8 +41,13 @@ export default class BugoutClient {
 
 	// User handlers
 	async createUser(username: string, email: string, password: string): Promise<BugoutTypes.BugoutUser> {
+		const config = {
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			}
+		}
 		const data = `username=${username}&email=${email}&password=${password}`
-		const response = await this.caller(this.broodClient.post("/user", data))
+		const response = await this.caller(this.broodClient.post("/user", data, config))
 		return BugoutTypes.userUnpacker(response)
 	}
 
@@ -58,8 +63,13 @@ export default class BugoutClient {
 
 	// Token handlers
 	async createToken(username: string, password: string): Promise<BugoutTypes.BugoutToken> {
+		const config = {
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			}
+		}
 		const data = `username=${username}&password=${password}`
-		const response = await this.caller(this.broodClient.post("/token", data))
+		const response = await this.caller(this.broodClient.post("/token", data, config))
 		return BugoutTypes.tokenUnpacker(response)
 	}
 
