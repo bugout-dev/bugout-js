@@ -85,6 +85,64 @@ export function groupUnpacker(response): BugoutGroup {
 	} as BugoutGroup
 }
 
+export type BugoutResource = {
+	id: string
+	name: string
+	description: string
+	created_at: string
+	updated_at: string
+}
+
+export function resourceUnpacker(response): BugoutResource {
+	return {
+		id: response.id,
+		name: response.name,
+		description: response.description,
+		created_at: response.created_at,
+		updated_at: response.updated_at
+	} as BugoutResource
+}
+
+export type BugoutResources = {
+	resources: BugoutResource[]
+}
+
+export function resourcesUnpacker(response): BugoutResources {
+	return {
+		resources: response.resources.map((resource: BugoutResource) => {
+			return resourceUnpacker(resource)
+		})
+	} as BugoutResources
+}
+
+export type BugoutResourceHolder = {
+	id: string
+	holder_type: string
+	permissions: string[]
+}
+
+export function resourceHolderUnpacker(response): BugoutResourceHolder {
+	return {
+		id: response.id,
+		holder_type: response.holder_type,
+		permissions: response.permissions
+	} as BugoutResourceHolder
+}
+
+export type BugoutResourceHolders = {
+	resource_id: string
+	holders: BugoutResourceHolder[]
+}
+
+export function resourceHoldersUnpacker(response): BugoutResourceHolders {
+	return {
+		resource_id: response.resource_id,
+		holders: response.holders.map((holder: BugoutResourceHolder) => {
+			return resourceHolderUnpacker(holder)
+		})
+	} as BugoutResourceHolders
+}
+
 export type BugoutJournal = {
 	id: string
 	bugout_user_id: string

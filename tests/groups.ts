@@ -13,4 +13,13 @@ describe("Groups tests", () => {
 			})
 			.catch(() => console.log("err - getGroup"))
 	})
+
+	it(`findGroup - should return group id = ${testGroupId}`, () => {
+		return bugout
+			.findGroup(testUserToken, testGroupId)
+			.then((response: BugoutTypes.BugoutGroup) => {
+				expect(response.id).to.equal(testGroupId)
+			})
+			.catch(() => console.log("err - findGroup"))
+	})
 })
