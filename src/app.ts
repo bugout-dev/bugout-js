@@ -61,6 +61,19 @@ export default class BugoutClient {
 		return BugoutTypes.userUnpacker(response)
 	}
 
+	async findUser(token: string, userId: string): Promise<BugoutTypes.BugoutUser> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			params: {
+				user_id: userId
+			}
+		}
+		const response = await this.caller(this.broodClient.get("/user/find", config))
+		return BugoutTypes.userUnpacker(response)
+	}
+
 	// Token handlers
 	async createToken(username: string, password: string): Promise<BugoutTypes.BugoutToken> {
 		const config = {
@@ -102,6 +115,93 @@ export default class BugoutClient {
 		}
 		const response = await this.caller(this.broodClient.get(`/group/${groupId}`, config))
 		return BugoutTypes.groupUnpacker(response)
+	}
+
+	async findGroup(token: string, groupId: string): Promise<BugoutTypes.BugoutGroup> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			params: {
+				group_id: groupId
+			}
+		}
+		const response = await this.caller(this.broodClient.get("/groups/find", config))
+		return BugoutTypes.groupUnpacker(response)
+	}
+
+	// Resource handlers
+	async listResources(token: string): Promise<BugoutTypes.BugoutResources> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.get("/resources", config))
+		return BugoutTypes.resourcesUnpacker(response)
+	}
+
+	async getResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.get(`/resources/${resourceId}`, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
+	async createResource(token: string, name: string, description: string): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = `name=${name}&description=${description}`
+		const response = await this.caller(this.broodClient.post("/resources", data, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
+	async addHolderToResource(
+		token: string,
+		resourceId: string,
+		holderId: string,
+		holderType: string,
+		permissions: string[]
+	): Promise<BugoutTypes.BugoutResourceHolders> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = {
+			holder_id: holderId,
+			holder_type: holderType,
+			permissions: permissions
+		}
+		const response = await this.caller(this.broodClient.post(`/resources/${resourceId}/holders`, data, config))
+		return BugoutTypes.resourceHoldersUnpacker(response)
+	}
+
+	async removeHolderFromResource(
+		token: string,
+		resourceId: string,
+		holderId: string,
+		holderType: string,
+		permissions: string[]
+	): Promise<BugoutTypes.BugoutResourceHolders> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			data: {
+				holder_id: holderId,
+				holder_type: holderType,
+				permissions: permissions
+			}
+		}
+		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}/holders`, config))
+		return BugoutTypes.resourceHoldersUnpacker(response)
 	}
 
 	// Journals handlers

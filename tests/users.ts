@@ -4,6 +4,9 @@ import "mocha"
 import { BugoutTypes } from "../src/app"
 import { bugout, testUsername, testUserPassword, testUserToken, newUsername } from "./common"
 
+const testFindUsername = "out"
+const testFindUserId = "c8cfd630-8816-4f5d-b9e3-ad99885598cc"
+
 describe("User tests", () => {
 	it("getUser - should return username = bug", () => {
 		return bugout
@@ -22,6 +25,16 @@ describe("User tests", () => {
 	// 		})
 	// 		.catch(() => console.log("err - createUser"))
 	// })
+
+	it(`findUser - should return username = ${testFindUsername} and undefined email`, () => {
+		return bugout
+			.findUser(testUserToken, testFindUserId)
+			.then((response: BugoutTypes.BugoutUser) => {
+				expect(response.username).to.equal(testFindUsername)
+				expect(response.email).to.equal(null)
+			})
+			.catch(() => console.log("err - findUser"))
+	})
 })
 
 describe("Token tests", () => {
