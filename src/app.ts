@@ -258,6 +258,16 @@ export default class BugoutClient {
 		return BugoutTypes.resourceHoldersUnpacker(response)
 	}
 
+	async deleteResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}`, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
 	// Journals handlers
 	async listJournals(token: string): Promise<BugoutTypes.BugoutJournals> {
 		const config = {
