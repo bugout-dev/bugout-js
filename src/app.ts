@@ -74,6 +74,29 @@ export default class BugoutClient {
 		return BugoutTypes.userUnpacker(response)
 	}
 
+	async changePassword(token: string, currentPassword: string, newPassword: string): Promise<BugoutTypes.BugoutUser> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = `current_password=${currentPassword}&new_password=${newPassword}`
+		const response = await this.caller(this.broodClient.post("/password/change", data, config))
+		return BugoutTypes.userUnpacker(response)
+	}
+
+	async restorePassword(email: string): Promise<BugoutTypes.BugoutPasswordRestore> {
+		const data = `email=${email}`
+		const response = await this.caller(this.broodClient.post("/password/restore", data))
+		return { reset_password: response.reset_password } as BugoutTypes.BugoutPasswordRestore
+	}
+
+	async resetPassword(resetId: string, newPassword: string): Promise<BugoutTypes.BugoutUser> {
+		const data = `reset_id=${resetId}&new_password=${newPassword}`
+		const response = await this.caller(this.broodClient.post("/password/reset", data))
+		return BugoutTypes.userUnpacker(response)
+	}
+
 	// Token handlers
 	async createToken(username: string, password: string): Promise<BugoutTypes.BugoutToken> {
 		const config = {
@@ -130,6 +153,34 @@ export default class BugoutClient {
 		return BugoutTypes.groupUnpacker(response)
 	}
 
+	async createGroup(token: string, groupName: string): Promise<BugoutTypes.BugoutGroup> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = `group_name=${groupName}`
+		const response = await this.caller(this.broodClient.post("/group", data, config))
+		return BugoutTypes.groupUnpacker(response)
+	}
+
+	async setUserInGroup(token: string, groupId: string, userType: string, username?: string, email?: string) {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		let data = `user_type=${userType}`
+		if (username) {
+			data += `&username=${username}`
+		}
+		if (email) {
+			data += `&email=${email}`
+		}
+		const response = await this.caller(this.broodClient.post(`/group/${groupId}/role`, data, config))
+		return BugoutTypes.groupUserUnpacker(response)
+	}
+
 	// Resource handlers
 	async listResources(token: string): Promise<BugoutTypes.BugoutResources> {
 		const config = {
@@ -151,13 +202,16 @@ export default class BugoutClient {
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
-	async createResource(token: string, name: string, description: string): Promise<BugoutTypes.BugoutResource> {
+	async createResource(token: string, name: string, description?: string): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		const data = `name=${name}&description=${description}`
+		let data = `name=${name}`
+		if (description) {
+			data += `&description=${description}`
+		}
 		const response = await this.caller(this.broodClient.post("/resources", data, config))
 		return BugoutTypes.resourceUnpacker(response)
 	}
@@ -202,6 +256,16 @@ export default class BugoutClient {
 		}
 		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}/holders`, config))
 		return BugoutTypes.resourceHoldersUnpacker(response)
+	}
+
+	async deleteResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}`, config))
+		return BugoutTypes.resourceUnpacker(response)
 	}
 
 	// Journals handlers

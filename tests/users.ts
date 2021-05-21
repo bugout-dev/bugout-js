@@ -2,10 +2,11 @@ import { expect } from "chai"
 import "mocha"
 
 import { BugoutTypes } from "../src/app"
-import { bugout, testUsername, testUserPassword, testUserToken, newUsername } from "./common"
+import { bugout, testUsername, testUserPassword, testUserToken } from "./common"
 
 const testFindUsername = "out"
 const testFindUserId = "c8cfd630-8816-4f5d-b9e3-ad99885598cc"
+export const newUsername = "bugauto7"
 
 describe("User tests", () => {
 	it("getUser - should return username = bug", () => {
@@ -16,15 +17,6 @@ describe("User tests", () => {
 			})
 			.catch(() => console.log("err - getUser"))
 	})
-
-	// it(`createUser - should return username = ${newUsername}`, () => {
-	// 	return bugout
-	// 		.createUser(newUsername, `${newUsername}@example.com`, "superl123on!assword")
-	// 		.then((response: BugoutTypes.BugoutUser) => {
-	// 			expect(response.username).to.equal("bugauto4")
-	// 		})
-	// 		.catch(() => console.log("err - createUser"))
-	// })
 
 	it(`findUser - should return username = ${testFindUsername} and undefined email`, () => {
 		return bugout
