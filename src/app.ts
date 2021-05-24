@@ -182,10 +182,14 @@ export default class BugoutClient {
 	}
 
 	// Resource handlers
-	async listResources(token: string): Promise<BugoutTypes.BugoutResources> {
+	async listResources(token: string, name?: string, external?: string): Promise<BugoutTypes.BugoutResources> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
+			},
+			params: {
+				name: name,
+				external: external
 			}
 		}
 		const response = await this.caller(this.broodClient.get("/resources", config))
@@ -202,7 +206,12 @@ export default class BugoutClient {
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
-	async createResource(token: string, name: string, description?: string): Promise<BugoutTypes.BugoutResource> {
+	async createResource(
+		token: string,
+		name: string,
+		description?: string,
+		external?: string
+	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
@@ -211,6 +220,9 @@ export default class BugoutClient {
 		let data = `name=${name}`
 		if (description) {
 			data += `&description=${description}`
+		}
+		if (external) {
+			data += `&external=${external}`
 		}
 		const response = await this.caller(this.broodClient.post("/resources", data, config))
 		return BugoutTypes.resourceUnpacker(response)

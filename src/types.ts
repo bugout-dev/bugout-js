@@ -118,6 +118,7 @@ export type BugoutResource = {
 	id: string
 	name: string
 	description: string
+	external: string
 	created_at: string
 	updated_at: string
 }
@@ -127,6 +128,7 @@ export function resourceUnpacker(response): BugoutResource {
 		id: response.id,
 		name: response.name,
 		description: response.description,
+		external: response.external,
 		created_at: response.created_at,
 		updated_at: response.updated_at
 	} as BugoutResource
