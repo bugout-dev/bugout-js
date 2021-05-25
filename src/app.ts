@@ -182,14 +182,20 @@ export default class BugoutClient {
 	}
 
 	// Resource handlers
-	async listResources(token: string, name?: string, external?: string): Promise<BugoutTypes.BugoutResources> {
+	async listResources(
+		token: string,
+		name?: string,
+		application_id?: string,
+		external_id?: string
+	): Promise<BugoutTypes.BugoutResources> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
 			params: {
 				name: name,
-				external: external
+				application_id: application_id,
+				external_id: external_id
 			}
 		}
 		const response = await this.caller(this.broodClient.get("/resources", config))
@@ -209,22 +215,53 @@ export default class BugoutClient {
 	async createResource(
 		token: string,
 		name: string,
+		application_id: string,
 		description?: string,
-		external?: string
+		external_id?: string
 	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		let data = `name=${name}`
+		let data = `name=${name}&application_id=${application_id}`
 		if (description) {
 			data += `&description=${description}`
 		}
-		if (external) {
-			data += `&external=${external}`
+		if (external_id) {
+			data += `&external_id=${external_id}`
 		}
 		const response = await this.caller(this.broodClient.post("/resources", data, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
+	async updateResource(
+		token: string,
+		resourceId: string,
+		name?: string,
+		application_id?: string,
+		description?: string,
+		external_id?: string
+	): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		let data = ""
+		if (name) {
+			data += `&name=${name}`
+		}
+		if (application_id) {
+			data += `&application_id=${application_id}`
+		}
+		if (description) {
+			data += `&description=${description}`
+		}
+		if (external_id) {
+			data += `&external_id=${external_id}`
+		}
+		const response = await this.caller(this.broodClient.put(`/resources/${resourceId}`, data, config))
 		return BugoutTypes.resourceUnpacker(response)
 	}
 

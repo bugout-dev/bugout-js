@@ -117,8 +117,9 @@ export function groupUserUnpacker(response): BugoutGroupUser {
 export type BugoutResource = {
 	id: string
 	name: string
+	application_id: string
 	description: string
-	external: string
+	external_id: string
 	created_at: string
 	updated_at: string
 }
@@ -127,8 +128,9 @@ export function resourceUnpacker(response): BugoutResource {
 	return {
 		id: response.id,
 		name: response.name,
+		application_id: response.application_id,
 		description: response.description,
-		external: response.external,
+		external_id: response.external_id,
 		created_at: response.created_at,
 		updated_at: response.updated_at
 	} as BugoutResource
