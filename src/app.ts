@@ -185,8 +185,8 @@ export default class BugoutClient {
 	async listResources(
 		token: string,
 		name?: string,
-		application_id?: string,
-		external_id?: string
+		applicationId?: string,
+		externalId?: string
 	): Promise<BugoutTypes.BugoutResources> {
 		const config = {
 			headers: {
@@ -194,8 +194,8 @@ export default class BugoutClient {
 			},
 			params: {
 				name: name,
-				application_id: application_id,
-				external_id: external_id
+				application_id: applicationId,
+				external_id: externalId
 			}
 		}
 		const response = await this.caller(this.broodClient.get("/resources", config))
@@ -215,21 +215,21 @@ export default class BugoutClient {
 	async createResource(
 		token: string,
 		name: string,
-		application_id: string,
+		applicationId: string,
 		description?: string,
-		external_id?: string
+		externalId?: string
 	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		let data = `name=${name}&application_id=${application_id}`
+		let data = `name=${name}&application_id=${applicationId}`
 		if (description) {
 			data += `&description=${description}`
 		}
-		if (external_id) {
-			data += `&external_id=${external_id}`
+		if (externalId) {
+			data += `&external_id=${externalId}`
 		}
 		const response = await this.caller(this.broodClient.post("/resources", data, config))
 		return BugoutTypes.resourceUnpacker(response)
@@ -239,9 +239,9 @@ export default class BugoutClient {
 		token: string,
 		resourceId: string,
 		name?: string,
-		application_id?: string,
+		applicationId?: string,
 		description?: string,
-		external_id?: string
+		externalId?: string
 	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
@@ -252,14 +252,14 @@ export default class BugoutClient {
 		if (name) {
 			data += `&name=${name}`
 		}
-		if (application_id) {
-			data += `&application_id=${application_id}`
+		if (applicationId) {
+			data += `&application_id=${applicationId}`
 		}
 		if (description) {
 			data += `&description=${description}`
 		}
-		if (external_id) {
-			data += `&external_id=${external_id}`
+		if (externalId) {
+			data += `&external_id=${externalId}`
 		}
 		const response = await this.caller(this.broodClient.put(`/resources/${resourceId}`, data, config))
 		return BugoutTypes.resourceUnpacker(response)
