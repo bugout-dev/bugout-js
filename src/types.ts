@@ -296,3 +296,25 @@ export function searchResultsUnpacker(response): BugoutSearchResults {
 		})
 	} as BugoutSearchResults
 }
+
+export type BugoutEntryImage = {
+	id: string
+	journal_id: string
+	entry_id: string
+	name: string
+	extension: string
+	created_at: string
+	updated_at: string
+}
+
+export function entryImageUnpacker(response) {
+	return {
+		id: response.id,
+		journal_id: response.journal_id,
+		entry_id: response.entry_id,
+		name: response.name,
+		extension: response.extension,
+		created_at: response.created_at,
+		updated_at: response.updated_at
+	} as BugoutEntryImage
+}

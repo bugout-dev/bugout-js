@@ -1,15 +1,24 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios"
+import * as fs from "fs"
+
+import axios, { AxiosInstance, AxiosResponse, ResponseType } from "axios"
+import FormData from "form-data"
 
 import * as BugoutTypes from "./types"
-import { bugoutBroodUrl, bugoutSpiredUrl } from "./constants"
+import { bugoutBroodUrl, bugoutSpiredUrl, bugoutFilesUrl } from "./constants"
 
 export default class BugoutClient {
 	private broodClient: AxiosInstance
 	private spireClient: AxiosInstance
+	private filesClient: AxiosInstance
 
-	constructor(public broodUrl: string = bugoutBroodUrl, public spireUrl: string = bugoutSpiredUrl) {
+	constructor(
+		public broodUrl: string = bugoutBroodUrl,
+		public spireUrl: string = bugoutSpiredUrl,
+		public filesUrl: string = bugoutFilesUrl
+	) {
 		this.broodClient = axios.create({ baseURL: broodUrl })
 		this.spireClient = axios.create({ baseURL: spireUrl })
+		this.filesClient = axios.create({ baseURL: filesUrl })
 	}
 
 	static get broodUrl(): string {
@@ -18,6 +27,10 @@ export default class BugoutClient {
 
 	static get spireUrl(): string {
 		return this.spireUrl
+	}
+
+	static get filesUrl(): string {
+		return this.filesUrl
 	}
 
 	private async caller(request: any): Promise<any> {
@@ -39,8 +52,17 @@ export default class BugoutClient {
 		return { status: response.status } as BugoutTypes.BugoutPing
 	}
 
+	async pingFiles(): Promise<BugoutTypes.BugoutPing> {
+		const response = await this.caller(this.filesClient.get("/ping"))
+		return { status: response.status } as BugoutTypes.BugoutPing
+	}
+
 	// User handlers
-	async createUser(username: string, email: string, password: string): Promise<BugoutTypes.BugoutUser> {
+	async createUser(
+		username: string,
+		email: string,
+		password: string
+	): Promise<BugoutTypes.BugoutUser> {
 		const config = {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded"
@@ -74,7 +96,11 @@ export default class BugoutClient {
 		return BugoutTypes.userUnpacker(response)
 	}
 
-	async changePassword(token: string, currentPassword: string, newPassword: string): Promise<BugoutTypes.BugoutUser> {
+	async changePassword(
+		token: string,
+		currentPassword: string,
+		newPassword: string
+	): Promise<BugoutTypes.BugoutUser> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
@@ -88,7 +114,9 @@ export default class BugoutClient {
 	async restorePassword(email: string): Promise<BugoutTypes.BugoutPasswordRestore> {
 		const data = `email=${email}`
 		const response = await this.caller(this.broodClient.post("/password/restore", data))
-		return { reset_password: response.reset_password } as BugoutTypes.BugoutPasswordRestore
+		return {
+			reset_password: response.reset_password
+		} as BugoutTypes.BugoutPasswordRestore
 	}
 
 	async resetPassword(resetId: string, newPassword: string): Promise<BugoutTypes.BugoutUser> {
@@ -164,7 +192,13 @@ export default class BugoutClient {
 		return BugoutTypes.groupUnpacker(response)
 	}
 
-	async setUserInGroup(token: string, groupId: string, userType: string, username?: string, email?: string) {
+	async setUserInGroup(
+		token: string,
+		groupId: string,
+		userType: string,
+		username?: string,
+		email?: string
+	) {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
@@ -177,7 +211,9 @@ export default class BugoutClient {
 		if (email) {
 			data += `&email=${email}`
 		}
-		const response = await this.caller(this.broodClient.post(`/group/${groupId}/role`, data, config))
+		const response = await this.caller(
+			this.broodClient.post(`/group/${groupId}/role`, data, config)
+		)
 		return BugoutTypes.groupUserUnpacker(response)
 	}
 
@@ -261,7 +297,9 @@ export default class BugoutClient {
 		if (externalId) {
 			data += `&external_id=${externalId}`
 		}
-		const response = await this.caller(this.broodClient.put(`/resources/${resourceId}`, data, config))
+		const response = await this.caller(
+			this.broodClient.put(`/resources/${resourceId}`, data, config)
+		)
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
@@ -282,7 +320,9 @@ export default class BugoutClient {
 			holder_type: holderType,
 			permissions: permissions
 		}
-		const response = await this.caller(this.broodClient.post(`/resources/${resourceId}/holders`, data, config))
+		const response = await this.caller(
+			this.broodClient.post(`/resources/${resourceId}/holders`, data, config)
+		)
 		return BugoutTypes.resourceHoldersUnpacker(response)
 	}
 
@@ -303,7 +343,9 @@ export default class BugoutClient {
 				permissions: permissions
 			}
 		}
-		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}/holders`, config))
+		const response = await this.caller(
+			this.broodClient.delete(`/resources/${resourceId}/holders`, config)
+		)
 		return BugoutTypes.resourceHoldersUnpacker(response)
 	}
 
@@ -313,7 +355,9 @@ export default class BugoutClient {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}`, config))
+		const response = await this.caller(
+			this.broodClient.delete(`/resources/${resourceId}`, config)
+		)
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
@@ -362,17 +406,25 @@ export default class BugoutClient {
 			context_id: contextId,
 			context_type: contextType
 		}
-		const response = await this.caller(this.spireClient.post(`/journals/${journalId}/entries`, data, config))
+		const response = await this.caller(
+			this.spireClient.post(`/journals/${journalId}/entries`, data, config)
+		)
 		return BugoutTypes.journalEntryUnpacker(response)
 	}
 
-	async getEntry(token: string, journalId: string, entryId: string): Promise<BugoutTypes.BugoutJournalEntry> {
+	async getEntry(
+		token: string,
+		journalId: string,
+		entryId: string
+	): Promise<BugoutTypes.BugoutJournalEntry> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		const response = await this.caller(this.spireClient.get(`/journals/${journalId}/entries/${entryId}`, config))
+		const response = await this.caller(
+			this.spireClient.get(`/journals/${journalId}/entries/${entryId}`, config)
+		)
 		return BugoutTypes.journalEntryUnpacker(response)
 	}
 
@@ -382,7 +434,9 @@ export default class BugoutClient {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		const response = await this.caller(this.spireClient.get(`/journals/${journalId}/entries`, config))
+		const response = await this.caller(
+			this.spireClient.get(`/journals/${journalId}/entries`, config)
+		)
 		return BugoutTypes.journalEntriesUnpacker(response)
 	}
 
@@ -399,7 +453,10 @@ export default class BugoutClient {
 		const response = await this.caller(
 			this.spireClient.get(`/journals/${journalId}/entries/${entryId}/content`, config)
 		)
-		return { title: response.title, content: response.content } as BugoutTypes.BugoutJournalEntryContent
+		return {
+			title: response.title,
+			content: response.content
+		} as BugoutTypes.BugoutJournalEntryContent
 	}
 
 	async updateEntry(
@@ -451,8 +508,55 @@ export default class BugoutClient {
 				content: content
 			}
 		}
-		const response = await this.caller(this.spireClient.get(`/journals/${journalId}/search`, config))
+		const response = await this.caller(
+			this.spireClient.get(`/journals/${journalId}/search`, config)
+		)
 		return BugoutTypes.searchResultsUnpacker(response)
+	}
+
+	// Files handlers
+	async uploadEntryImage(
+		token: string,
+		journalId: string,
+		entryId: string,
+		imagePath: string
+	): Promise<BugoutTypes.BugoutEntryImage> {
+		const formData = new FormData()
+		formData.append("image", fs.createReadStream(imagePath))
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				...formData.getHeaders()
+			}
+		}
+		const response = await this.caller(
+			this.filesClient.post(
+				`/files/${journalId}/entries/${entryId}/images`,
+				formData,
+				config
+			)
+		)
+		return BugoutTypes.entryImageUnpacker(response)
+	}
+
+	async getEntryImage(
+		token: string,
+		journalId: string,
+		entryId: string,
+		imageId: string,
+	): Promise<any> {
+		const streamResponseType: ResponseType = "stream"
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			responseType: streamResponseType
+		}
+		const response = await this.caller(this.filesClient.get(
+			`/files/${journalId}/entries/${entryId}/images/${imageId}`,
+			config
+		))
+		return response
 	}
 }
 
