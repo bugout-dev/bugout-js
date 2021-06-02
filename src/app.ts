@@ -515,6 +515,22 @@ export default class BugoutClient {
 	}
 
 	// Files handlers
+	async listEntryImages(
+		token: string,
+		journalId: string,
+		entryId: string
+	): Promise<BugoutTypes.BugoutEntryImages> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(
+			this.filesClient.get(`/files/${journalId}/entries/${entryId}/images`, config)
+		)
+		return BugoutTypes.entryImagesUnpacker(response)
+	}
+
 	async uploadEntryImage(
 		token: string,
 		journalId: string,
@@ -530,11 +546,7 @@ export default class BugoutClient {
 			}
 		}
 		const response = await this.caller(
-			this.filesClient.post(
-				`/files/${journalId}/entries/${entryId}/images`,
-				formData,
-				config
-			)
+			this.filesClient.post(`/files/${journalId}/entries/${entryId}/images`, formData, config)
 		)
 		return BugoutTypes.entryImageUnpacker(response)
 	}
@@ -543,7 +555,7 @@ export default class BugoutClient {
 		token: string,
 		journalId: string,
 		entryId: string,
-		imageId: string,
+		imageId: string
 	): Promise<any> {
 		const streamResponseType: ResponseType = "stream"
 		const config = {
@@ -552,10 +564,9 @@ export default class BugoutClient {
 			},
 			responseType: streamResponseType
 		}
-		const response = await this.caller(this.filesClient.get(
-			`/files/${journalId}/entries/${entryId}/images/${imageId}`,
-			config
-		))
+		const response = await this.caller(
+			this.filesClient.get(`/files/${journalId}/entries/${entryId}/images/${imageId}`, config)
+		)
 		return response
 	}
 }

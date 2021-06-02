@@ -318,3 +318,15 @@ export function entryImageUnpacker(response) {
 		updated_at: response.updated_at
 	} as BugoutEntryImage
 }
+
+export type BugoutEntryImages = {
+	images: BugoutEntryImage[]
+}
+
+export function entryImagesUnpacker(response): BugoutEntryImages {
+	return {
+		images: response.images.map((image: BugoutEntryImage) => {
+			return entryImageUnpacker(image)
+		})
+	} as BugoutEntryImages
+}
