@@ -40,13 +40,19 @@ export default class BugoutClient {
 	}
 
 	// User handlers
-	async createUser(username: string, email: string, password: string): Promise<BugoutTypes.BugoutUser> {
+	async createUser(username: string, email: string, password: string, firstName?: string, lastName?: string): Promise<BugoutTypes.BugoutUser> {
 		const config = {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded"
 			}
 		}
-		const data = `username=${username}&email=${email}&password=${password}`
+		let data = `username=${username}&email=${email}&password=${password}`
+		if (firstName !== undefined) {
+			data = `${data}&first_name=${firstName}`
+		}
+		if (lastName !== undefined) {
+			data = `${data}&last_name=${lastName}`
+		}
 		const response = await this.caller(this.broodClient.post("/user", data, config))
 		return BugoutTypes.userUnpacker(response)
 	}
@@ -58,6 +64,29 @@ export default class BugoutClient {
 			}
 		}
 		const response = await this.caller(this.broodClient.get("/user", config))
+		return BugoutTypes.userUnpacker(response)
+	}
+
+	async updateUser(token: string, firstName?: string, lastName?: string): Promise<BugoutTypes.BugoutUser> {
+		let data = "";
+		if (firstName === undefined && lastName === undefined) {
+			throw new Error(`updateUser: At least one of firstName (${firstName}) or lastName (${lastName}) must be defined`)
+		} else if (firstName !== undefined && lastName !== undefined) {
+			data = `first_name=${firstName}&last_name=${lastName}`
+		} else if (firstName !== undefined) {
+			data = `firstName=${firstName}`
+		} else {
+			data = `lastName=${lastName}`
+		}
+
+		const config = {
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+				Authorization: `Bearer ${token}`,
+			}
+		}
+
+		const response = await this.caller(this.broodClient.put("/user", data, config))
 		return BugoutTypes.userUnpacker(response)
 	}
 
