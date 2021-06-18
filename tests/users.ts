@@ -4,11 +4,27 @@ import "mocha"
 import { BugoutTypes } from "../src/app"
 import { bugout, testUsername, testUserPassword, testUserToken } from "./common"
 
+const testFirstName = "BugFirst-Test"
 const testFindUsername = "out"
 const testFindUserId = "c8cfd630-8816-4f5d-b9e3-ad99885598cc"
 export const newUsername = "bugauto7"
 
 describe("User tests", () => {
+	it("createUser - should return username = newUsername", () => {
+		return bugout
+			.createUser(
+				newUsername,
+				`${newUsername}@example.com`,
+				newUsername,
+				`First-${newUsername}`,
+				`Last-${newUsername}`
+			)
+			.then((response: BugoutTypes.BugoutUser) => {
+				expect(response.username).to.equal(newUsername)
+			})
+			.catch(() => console.log("err - createUser"))
+	})
+
 	it("getUser - should return username = bug", () => {
 		return bugout
 			.getUser(testUserToken)
@@ -16,6 +32,15 @@ describe("User tests", () => {
 				expect(response.username).to.equal(testUsername)
 			})
 			.catch(() => console.log("err - getUser"))
+	})
+
+	it("updateUser - should return first_name = testFirstName", () => {
+		return bugout
+			.updateUser(testUserToken, testFirstName)
+			.then((response: BugoutTypes.BugoutUser) => {
+				expect(response.first_name).to.equal(testFirstName)
+			})
+			.catch(() => console.log("err - updateUser"))
 	})
 
 	it(`findUser - should return username = ${testFindUsername} and undefined email`, () => {
