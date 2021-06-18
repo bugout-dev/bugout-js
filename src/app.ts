@@ -68,21 +68,22 @@ export default class BugoutClient {
 	}
 
 	async updateUser(token: string, firstName?: string, lastName?: string): Promise<BugoutTypes.BugoutUser> {
-		let data = "";
-		if (firstName === undefined && lastName === undefined) {
-			throw new Error(`updateUser: At least one of firstName (${firstName}) or lastName (${lastName}) must be defined`)
-		} else if (firstName !== undefined && lastName !== undefined) {
+		let data = ""
+
+		if (firstName !== undefined && lastName !== undefined) {
 			data = `first_name=${firstName}&last_name=${lastName}`
 		} else if (firstName !== undefined) {
-			data = `firstName=${firstName}`
+			data = `first_name=${firstName}`
+		} else if (lastName !== undefined) {
+			data = `last_name=${lastName}`
 		} else {
-			data = `lastName=${lastName}`
+			throw new Error(`updateUser: At least one of firstName (${firstName}) or lastName (${lastName}) must be defined`)
 		}
 
 		const config = {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: `Bearer ${token}`,
+				"Authorization": `Bearer ${token}`
 			}
 		}
 

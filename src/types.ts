@@ -16,6 +16,8 @@ export type BugoutPing = {
 export type BugoutUser = {
 	id: string
 	username: string
+	first_name?: string
+	last_name?: string
 	email?: string
 	normalized_email?: string
 	verified?: string
@@ -28,6 +30,8 @@ export function userUnpacker(response): BugoutUser {
 	return {
 		id: response.user_id,
 		username: response.username,
+		first_name: response.first_name,
+		last_name: response.last_name,
 		email: response.email,
 		normalized_email: response.normalized_email,
 		verified: response.verified,
