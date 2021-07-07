@@ -460,6 +460,21 @@ export default class BugoutClient {
 		return BugoutTypes.journalEntryUnpacker(response)
 	}
 
+	// Journal entry tags handlers
+	async createTags(token: string, journalId: string, entryId: string, tags: string[]): Promise<string[]> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = {
+			tags: tags
+		}
+		const response = await this.caller(this.spireClient.post(`/journals/${journalId}/entries/${entryId}/tags`, data, config))
+		return response
+	}
+
+	// Search handler
 	async search(
 		token: string,
 		journalId: string,

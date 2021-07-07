@@ -12,6 +12,7 @@ export const testGroupId = "46bf0ebe-116b-47c0-9be7-76278c67a427"
 export const testJournalId = "3c815788-7239-4d17-a3dc-c428a9460cba"
 export const newEntryTitle = "Test title"
 export const testEntryId = "037c4716-6178-4efd-acf0-ae681f49132f"
+export const testEntryNewTag = "tagNew"
 
 describe("Ping tests", () => {
 	it("pingBrood - should return ok", () => {
