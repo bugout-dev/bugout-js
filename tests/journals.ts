@@ -2,7 +2,7 @@ import { expect } from "chai"
 import "mocha"
 
 import { BugoutTypes } from "../src/app"
-import { bugout, testUserToken, testJournalId, newEntryTitle, testEntryId } from "./common"
+import { bugout, testUserToken, testJournalId, newEntryTitle, testEntryId, testEntryNewTag } from "./common"
 
 describe("Journals tests", () => {
 	it(`getJournal - should return journal id = ${testJournalId}`, () => {
@@ -72,6 +72,14 @@ describe("Entries tests", () => {
 				expect(response.id).to.equal(testEntryId)
 			})
 			.catch(() => console.log("err - updateEntry"))
+	})
+	it(`createTags - should return list with tag = ${testEntryNewTag}`, () => {
+		return bugout
+			.createTags(testUserToken, testJournalId, testEntryId, [testEntryNewTag])
+			.then((response: string[]) => {
+				expect(response).to.equal([testEntryNewTag])
+			})
+			.catch(() => console.log("err - createTags"))
 	})
 	it("search - should return list of entries", () => {
 		return bugout
