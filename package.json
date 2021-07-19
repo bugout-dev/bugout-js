@@ -1,6 +1,6 @@
 {
   "name": "@bugout/bugout-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "JavaScript client library for Bugout API",
   "main": "lib/app.js",
   "types": "lib/app.d.ts",

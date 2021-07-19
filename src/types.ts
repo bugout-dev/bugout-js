@@ -118,6 +118,34 @@ export function groupUserUnpacker(response): BugoutGroupUser {
 	} as BugoutGroupUser
 }
 
+export type BugoutApplication = {
+	id: string
+	name: string
+	description: string
+	group_id: string
+}
+
+export function applicationUnpacker(response): BugoutApplication {
+	return {
+		id: response.id,
+		name: response.name,
+		description: response.description,
+		group_id: response.group_id
+	} as BugoutApplication
+}
+
+export type BugoutApplications = {
+	applications: BugoutApplication[]
+}
+
+export function applicationsUnpacker(response): BugoutApplications {
+	return {
+		applications: response.applications.map((application: BugoutApplication) => {
+			return applicationUnpacker(application)
+		})
+	} as BugoutApplications
+}
+
 export type BugoutResource = {
 	id: string
 	name: string

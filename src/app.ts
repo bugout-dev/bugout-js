@@ -211,7 +211,89 @@ export default class BugoutClient {
 		return BugoutTypes.groupUserUnpacker(response)
 	}
 
+	// Application handlers
+	async createApplication(
+		token: string,
+		name: string,
+		description: string,
+		groupId: string
+	): Promise<BugoutTypes.BugoutApplication> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const data = `name=${name}&description=${description}&group_id=${groupId}`
+		const response = await this.caller(this.broodClient.post("/applications", data, config))
+		return BugoutTypes.applicationUnpacker(response)
+	}
+
+	async getApplication(
+		token: string,
+		applicationId: string
+	): Promise<BugoutTypes.BugoutApplication> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.get(`/applications/${applicationId}`, config))
+		return BugoutTypes.applicationUnpacker(response)
+	}
+
+	async listApplications(
+		token: string,
+		groupId?: string
+	): Promise<BugoutTypes.BugoutApplications> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			params: {
+				group_id: groupId,
+			}
+		}
+		const response = await this.caller(this.broodClient.get("/applications", config))
+		return BugoutTypes.applicationsUnpacker(response)
+	}
+
+	async deleteApplication(
+		token: string,
+		applicationId: string
+	): Promise<BugoutTypes.BugoutApplication> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.delete(`/applications/${applicationId}`, config))
+		return BugoutTypes.applicationUnpacker(response)
+	}
+
 	// Resource handlers
+	async createResource(
+		token: string,
+		name: string,
+		applicationId: string,
+		description?: string,
+		externalId?: string
+	): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		let data = `name=${name}&application_id=${applicationId}`
+		if (description) {
+			data += `&description=${description}`
+		}
+		if (externalId) {
+			data += `&external_id=${externalId}`
+		}
+		const response = await this.caller(this.broodClient.post("/resources", data, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
 	async listResources(
 		token: string,
 		name?: string,
@@ -239,29 +321,6 @@ export default class BugoutClient {
 			}
 		}
 		const response = await this.caller(this.broodClient.get(`/resources/${resourceId}`, config))
-		return BugoutTypes.resourceUnpacker(response)
-	}
-
-	async createResource(
-		token: string,
-		name: string,
-		applicationId: string,
-		description?: string,
-		externalId?: string
-	): Promise<BugoutTypes.BugoutResource> {
-		const config = {
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		}
-		let data = `name=${name}&application_id=${applicationId}`
-		if (description) {
-			data += `&description=${description}`
-		}
-		if (externalId) {
-			data += `&external_id=${externalId}`
-		}
-		const response = await this.caller(this.broodClient.post("/resources", data, config))
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
