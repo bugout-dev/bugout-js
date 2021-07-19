@@ -273,22 +273,17 @@ export default class BugoutClient {
 	// Resource handlers
 	async createResource(
 		token: string,
-		name: string,
 		applicationId: string,
-		description?: string,
-		externalId?: string
+		resourceData: any
 	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		let data = `name=${name}&application_id=${applicationId}`
-		if (description) {
-			data += `&description=${description}`
-		}
-		if (externalId) {
-			data += `&external_id=${externalId}`
+		const data = {
+			application_id: applicationId,
+			resource_data: resourceData
 		}
 		const response = await this.caller(this.broodClient.post("/resources", data, config))
 		return BugoutTypes.resourceUnpacker(response)
@@ -296,19 +291,13 @@ export default class BugoutClient {
 
 	async listResources(
 		token: string,
-		name?: string,
-		applicationId?: string,
-		externalId?: string
+		params?: any,
 	): Promise<BugoutTypes.BugoutResources> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
-			params: {
-				name: name,
-				application_id: applicationId,
-				external_id: externalId
-			}
+			params: params
 		}
 		const response = await this.caller(this.broodClient.get("/resources", config))
 		return BugoutTypes.resourcesUnpacker(response)
@@ -327,30 +316,29 @@ export default class BugoutClient {
 	async updateResource(
 		token: string,
 		resourceId: string,
-		name?: string,
-		applicationId?: string,
-		description?: string,
-		externalId?: string
+		update: any,
+		dropKeys: string[]
 	): Promise<BugoutTypes.BugoutResource> {
 		const config = {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
 		}
-		let data = ""
-		if (name) {
-			data += `&name=${name}`
-		}
-		if (applicationId) {
-			data += `&application_id=${applicationId}`
-		}
-		if (description) {
-			data += `&description=${description}`
-		}
-		if (externalId) {
-			data += `&external_id=${externalId}`
+		const data = {
+			update: update,
+			drop_keys: dropKeys
 		}
 		const response = await this.caller(this.broodClient.put(`/resources/${resourceId}`, data, config))
+		return BugoutTypes.resourceUnpacker(response)
+	}
+
+	async deleteResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		}
+		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}`, config))
 		return BugoutTypes.resourceUnpacker(response)
 	}
 
@@ -394,16 +382,6 @@ export default class BugoutClient {
 		}
 		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}/holders`, config))
 		return BugoutTypes.resourceHoldersUnpacker(response)
-	}
-
-	async deleteResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
-		const config = {
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		}
-		const response = await this.caller(this.broodClient.delete(`/resources/${resourceId}`, config))
-		return BugoutTypes.resourceUnpacker(response)
 	}
 
 	// Journals handlers

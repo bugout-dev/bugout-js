@@ -148,10 +148,8 @@ export function applicationsUnpacker(response): BugoutApplications {
 
 export type BugoutResource = {
 	id: string
-	name: string
 	application_id: string
-	description: string
-	external_id: string
+	resource_data: any
 	created_at: string
 	updated_at: string
 }
@@ -159,10 +157,8 @@ export type BugoutResource = {
 export function resourceUnpacker(response): BugoutResource {
 	return {
 		id: response.id,
-		name: response.name,
 		application_id: response.application_id,
-		description: response.description,
-		external_id: response.external_id,
+		resource_data: response.resource_data,
 		created_at: response.created_at,
 		updated_at: response.updated_at
 	} as BugoutResource
