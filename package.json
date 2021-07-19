@@ -6,6 +6,7 @@
   "types": "lib/app.d.ts",
   "scripts": {
     "build": "tsc",
+    "format": "prettier --write src",
     "lint": "eslint .",
     "test": "mocha -r ts-node/register tests/**/*.ts",
     "watch": "tsc -w"
@@ -40,6 +41,7 @@
     "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "mocha": "^8.4.0",
+    "prettier": "2.3.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   }
