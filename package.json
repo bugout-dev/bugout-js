@@ -1,15 +1,15 @@
 {
   "name": "@bugout/bugout-js",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "description": "JavaScript client library for Bugout API",
   "main": "lib/app.js",
   "types": "lib/app.d.ts",
   "scripts": {
     "build": "tsc",
+    "format": "prettier --write src",
     "lint": "eslint .",
     "test": "mocha -r ts-node/register tests/**/*.ts",
-    "watch": "tsc -w",
-    "format": "prettier --write src"
+    "watch": "tsc -w"
   },
   "files": [
     "lib/*",
