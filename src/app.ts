@@ -30,8 +30,8 @@ export default class BugoutClient {
     }
 
     static get filesUrl(): string {
-		return this.filesUrl
-	}
+        return this.filesUrl
+    }
 
     private async caller(request: any): Promise<any> {
         try {
@@ -705,60 +705,94 @@ export default class BugoutClient {
     }
 
     // Files handlers
-	async downloadEntryImage(
-		token: string,
-		journalId: string,
-		entryId: string,
-		imageId: string
-	): Promise<any> {
-		const streamResponseType: ResponseType = "stream"
-		const config = {
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			responseType: streamResponseType
-		}
-		const response = await this.caller(
-			this.filesClient.get(`/files/${journalId}/entries/${entryId}/images/${imageId}`, config)
-		)
-		return response
-	}
+    async downloadEntryImage(
+        token: string,
+        journalId: string,
+        entryId: string,
+        imageId: string
+    ): Promise<any> {
+        const streamResponseType: ResponseType = "stream"
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            responseType: streamResponseType,
+        }
+        const response = await this.caller(
+            this.filesClient.get(
+                `/files/${journalId}/entries/${entryId}/images/${imageId}`,
+                config
+            )
+        )
+        return response
+    }
 
     async listEntryImages(
-		token: string,
-		journalId: string,
-		entryId: string
-	): Promise<BugoutTypes.BugoutEntryImages> {
-		const config = {
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		}
-		const response = await this.caller(
-			this.filesClient.get(`/files/${journalId}/entries/${entryId}/images`, config)
-		)
-		return BugoutTypes.entryImagesUnpacker(response)
-	}
-
-	async uploadEntryImage(
-		token: string,
-		journalId: string,
-		entryId: string,
-		imagePath: string
-	): Promise<BugoutTypes.BugoutEntryImage> {
-		const formData = new FormData()
-		formData.append("image", fs.createReadStream(imagePath))
+        token: string,
+        journalId: string,
+        entryId: string
+    ): Promise<BugoutTypes.BugoutEntryImages> {
         const config = {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				...formData.getHeaders()
-			}
-		}
-		const response = await this.caller(
-			this.filesClient.post(`/files/${journalId}/entries/${entryId}/images`, formData, config)
-		)
-		return BugoutTypes.entryImageUnpacker(response)
-	}
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+        const response = await this.caller(
+            this.filesClient.get(
+                `/files/${journalId}/entries/${entryId}/images`,
+                config
+            )
+        )
+        return BugoutTypes.entryImagesUnpacker(response)
+    }
+
+    async uploadEntryImage(
+        token: string,
+        journalId: string,
+        entryId: string,
+        image_name: string,
+        imagePath: string
+    ): Promise<BugoutTypes.BugoutEntryImage> {
+        const formData = new FormData()
+        formData.append("image", fs.createReadStream(imagePath))
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                ...formData.getHeaders(),
+            },
+            params: {
+                image_name: image_name,
+            },
+        }
+        const response = await this.caller(
+            this.filesClient.post(
+                `/files/${journalId}/entries/${entryId}/images`,
+                formData,
+                config
+            )
+        )
+        return BugoutTypes.entryImageUnpacker(response)
+    }
+
+    async deleteEntryImage(
+        token: string,
+        journalId: string,
+        entryId: string,
+        imageId: string
+    ): Promise<BugoutTypes.BugoutEntryImage> {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+        const response = await this.caller(
+            this.filesClient.delete(
+                `/files/${journalId}/entries/${entryId}/images/${imageId}`,
+                config
+            )
+        )
+        return BugoutTypes.entryImageUnpacker(response)
+    }
 }
 
 export { BugoutTypes as BugoutTypes }

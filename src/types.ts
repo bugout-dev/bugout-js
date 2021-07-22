@@ -328,33 +328,31 @@ export function searchResultsUnpacker(response): BugoutSearchResults {
 }
 
 export type BugoutEntryImage = {
-	id: string
-	journal_id: string
-	entry_id: string
-	name: string
-	extension: string
-	created_at: string
+    id: string
+    journal_id: string
+    entry_id: string
+    name: string
+    created_at: string
 }
 
 export function entryImageUnpacker(response) {
-	return {
-		id: response.id,
-		journal_id: response.journal_id,
-		entry_id: response.entry_id,
-		name: response.name,
-		extension: response.extension,
-		created_at: response.created_at,
-	} as BugoutEntryImage
+    return {
+        id: response.id,
+        journal_id: response.journal_id,
+        entry_id: response.entry_id,
+        name: response.name,
+        created_at: response.created_at,
+    } as BugoutEntryImage
 }
 
 export type BugoutEntryImages = {
-	images: BugoutEntryImage[]
+    images: BugoutEntryImage[]
 }
 
 export function entryImagesUnpacker(response): BugoutEntryImages {
-	return {
-		images: response.images.map((image: BugoutEntryImage) => {
-			return entryImageUnpacker(image)
-		})
-	} as BugoutEntryImages
+    return {
+        images: response.images.map((image: BugoutEntryImage) => {
+            return entryImageUnpacker(image)
+        }),
+    } as BugoutEntryImages
 }
