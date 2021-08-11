@@ -52,6 +52,11 @@ export default class BugoutClient {
         return { status: response.status } as BugoutTypes.BugoutPing
     }
 
+    async pingFiles(): Promise<BugoutTypes.BugoutPing> {
+        const response = await this.caller(this.filesClient.get("/ping"))
+        return { status: response.status } as BugoutTypes.BugoutPing
+    }
+
     // User handlers
     async createUser(
         username: string,
@@ -62,8 +67,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutUser> {
         const config = {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
         }
         let data = `username=${username}&email=${email}&password=${password}`
         if (firstName !== undefined) {
@@ -72,21 +77,17 @@ export default class BugoutClient {
         if (lastName !== undefined) {
             data = `${data}&last_name=${lastName}`
         }
-        const response = await this.caller(
-            this.broodClient.post("/user", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/user", data, config))
         return BugoutTypes.userUnpacker(response)
     }
 
     async getUser(token: string): Promise<BugoutTypes.BugoutUser> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get("/user", config)
-        )
+        const response = await this.caller(this.broodClient.get("/user", config))
         return BugoutTypes.userUnpacker(response)
     }
 
@@ -112,31 +113,24 @@ export default class BugoutClient {
         const config = {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
 
-        const response = await this.caller(
-            this.broodClient.put("/user", data, config)
-        )
+        const response = await this.caller(this.broodClient.put("/user", data, config))
         return BugoutTypes.userUnpacker(response)
     }
 
-    async findUser(
-        token: string,
-        userId: string
-    ): Promise<BugoutTypes.BugoutUser> {
+    async findUser(token: string, userId: string): Promise<BugoutTypes.BugoutUser> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             params: {
-                user_id: userId,
-            },
+                user_id: userId
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get("/user/find", config)
-        )
+        const response = await this.caller(this.broodClient.get("/user/find", config))
         return BugoutTypes.userUnpacker(response)
     }
 
@@ -147,127 +141,92 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutUser> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = `current_password=${currentPassword}&new_password=${newPassword}`
-        const response = await this.caller(
-            this.broodClient.post("/password/change", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/password/change", data, config))
         return BugoutTypes.userUnpacker(response)
     }
 
-    async restorePassword(
-        email: string
-    ): Promise<BugoutTypes.BugoutPasswordRestore> {
+    async restorePassword(email: string): Promise<BugoutTypes.BugoutPasswordRestore> {
         const data = `email=${email}`
-        const response = await this.caller(
-            this.broodClient.post("/password/restore", data)
-        )
+        const response = await this.caller(this.broodClient.post("/password/restore", data))
         return {
-            reset_password: response.reset_password,
+            reset_password: response.reset_password
         } as BugoutTypes.BugoutPasswordRestore
     }
 
-    async resetPassword(
-        resetId: string,
-        newPassword: string
-    ): Promise<BugoutTypes.BugoutUser> {
+    async resetPassword(resetId: string, newPassword: string): Promise<BugoutTypes.BugoutUser> {
         const data = `reset_id=${resetId}&new_password=${newPassword}`
-        const response = await this.caller(
-            this.broodClient.post("/password/reset", data)
-        )
+        const response = await this.caller(this.broodClient.post("/password/reset", data))
         return BugoutTypes.userUnpacker(response)
     }
 
     // Token handlers
-    async createToken(
-        username: string,
-        password: string
-    ): Promise<BugoutTypes.BugoutToken> {
+    async createToken(username: string, password: string): Promise<BugoutTypes.BugoutToken> {
         const config = {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
         }
         const data = `username=${username}&password=${password}`
-        const response = await this.caller(
-            this.broodClient.post("/token", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/token", data, config))
         return BugoutTypes.tokenUnpacker(response)
     }
 
     async revokeToken(token: string): Promise<string> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.broodClient.delete("/token", config)
-        )
+        const response = await this.caller(this.broodClient.delete("/token", config))
         return response
     }
 
     async getUserTokens(token: string): Promise<BugoutTypes.BugoutUserTokens> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get("/tokens", config)
-        )
+        const response = await this.caller(this.broodClient.get("/tokens", config))
         return BugoutTypes.userTokensUnpacker(response)
     }
 
     // Group handlers
-    async getGroup(
-        token: string,
-        groupId: string
-    ): Promise<BugoutTypes.BugoutGroup> {
+    async getGroup(token: string, groupId: string): Promise<BugoutTypes.BugoutGroup> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get(`/group/${groupId}`, config)
-        )
+        const response = await this.caller(this.broodClient.get(`/group/${groupId}`, config))
         return BugoutTypes.groupUnpacker(response)
     }
 
-    async findGroup(
-        token: string,
-        groupId: string
-    ): Promise<BugoutTypes.BugoutGroup> {
+    async findGroup(token: string, groupId: string): Promise<BugoutTypes.BugoutGroup> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             params: {
-                group_id: groupId,
-            },
+                group_id: groupId
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get("/groups/find", config)
-        )
+        const response = await this.caller(this.broodClient.get("/groups/find", config))
         return BugoutTypes.groupUnpacker(response)
     }
 
-    async createGroup(
-        token: string,
-        groupName: string
-    ): Promise<BugoutTypes.BugoutGroup> {
+    async createGroup(token: string, groupName: string): Promise<BugoutTypes.BugoutGroup> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = `group_name=${groupName}`
-        const response = await this.caller(
-            this.broodClient.post("/group", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/group", data, config))
         return BugoutTypes.groupUnpacker(response)
     }
 
@@ -280,8 +239,8 @@ export default class BugoutClient {
     ) {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         let data = `user_type=${userType}`
         if (username) {
@@ -305,13 +264,11 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutApplication> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = `name=${name}&description=${description}&group_id=${groupId}`
-        const response = await this.caller(
-            this.broodClient.post("/applications", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/applications", data, config))
         return BugoutTypes.applicationUnpacker(response)
     }
 
@@ -321,8 +278,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutApplication> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
             this.broodClient.get(`/applications/${applicationId}`, config)
@@ -336,15 +293,13 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutApplications> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             params: {
-                group_id: groupId,
-            },
+                group_id: groupId
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get("/applications", config)
-        )
+        const response = await this.caller(this.broodClient.get("/applications", config))
         return BugoutTypes.applicationsUnpacker(response)
     }
 
@@ -354,8 +309,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutApplication> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
             this.broodClient.delete(`/applications/${applicationId}`, config)
@@ -371,47 +326,35 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutResource> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = {
             application_id: applicationId,
-            resource_data: resourceData,
+            resource_data: resourceData
         }
-        const response = await this.caller(
-            this.broodClient.post("/resources", data, config)
-        )
+        const response = await this.caller(this.broodClient.post("/resources", data, config))
         return BugoutTypes.resourceUnpacker(response)
     }
 
-    async listResources(
-        token: string,
-        params?: any
-    ): Promise<BugoutTypes.BugoutResources> {
+    async listResources(token: string, params?: any): Promise<BugoutTypes.BugoutResources> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
-            params: params,
+            params: params
         }
-        const response = await this.caller(
-            this.broodClient.get("/resources", config)
-        )
+        const response = await this.caller(this.broodClient.get("/resources", config))
         return BugoutTypes.resourcesUnpacker(response)
     }
 
-    async getResource(
-        token: string,
-        resourceId: string
-    ): Promise<BugoutTypes.BugoutResource> {
+    async getResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.broodClient.get(`/resources/${resourceId}`, config)
-        )
+        const response = await this.caller(this.broodClient.get(`/resources/${resourceId}`, config))
         return BugoutTypes.resourceUnpacker(response)
     }
 
@@ -423,12 +366,12 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutResource> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = {
             update: update,
-            drop_keys: dropKeys,
+            drop_keys: dropKeys
         }
         const response = await this.caller(
             this.broodClient.put(`/resources/${resourceId}`, data, config)
@@ -436,14 +379,11 @@ export default class BugoutClient {
         return BugoutTypes.resourceUnpacker(response)
     }
 
-    async deleteResource(
-        token: string,
-        resourceId: string
-    ): Promise<BugoutTypes.BugoutResource> {
+    async deleteResource(token: string, resourceId: string): Promise<BugoutTypes.BugoutResource> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
             this.broodClient.delete(`/resources/${resourceId}`, config)
@@ -460,20 +400,16 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutResourceHolders> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = {
             holder_id: holderId,
             holder_type: holderType,
-            permissions: permissions,
+            permissions: permissions
         }
         const response = await this.caller(
-            this.broodClient.post(
-                `/resources/${resourceId}/holders`,
-                data,
-                config
-            )
+            this.broodClient.post(`/resources/${resourceId}/holders`, data, config)
         )
         return BugoutTypes.resourceHoldersUnpacker(response)
     }
@@ -487,13 +423,13 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutResourceHolders> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             data: {
                 holder_id: holderId,
                 holder_type: holderType,
-                permissions: permissions,
-            },
+                permissions: permissions
+            }
         }
         const response = await this.caller(
             this.broodClient.delete(`/resources/${resourceId}/holders`, config)
@@ -505,27 +441,20 @@ export default class BugoutClient {
     async listJournals(token: string): Promise<BugoutTypes.BugoutJournals> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.spireClient.get("/journals", config)
-        )
+        const response = await this.caller(this.spireClient.get("/journals", config))
         return BugoutTypes.journalsUnpacker(response)
     }
 
-    async getJournal(
-        token: string,
-        journalId: string
-    ): Promise<BugoutTypes.BugoutJournal> {
+    async getJournal(token: string, journalId: string): Promise<BugoutTypes.BugoutJournal> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
-        const response = await this.caller(
-            this.spireClient.get(`/journals/${journalId}`, config)
-        )
+        const response = await this.caller(this.spireClient.get(`/journals/${journalId}`, config))
         return BugoutTypes.journalUnpacker(response)
     }
 
@@ -542,8 +471,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutJournalEntry> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = {
             title: title,
@@ -551,14 +480,10 @@ export default class BugoutClient {
             tags: tags,
             context_url: contextUrl,
             context_id: contextId,
-            context_type: contextType,
+            context_type: contextType
         }
         const response = await this.caller(
-            this.spireClient.post(
-                `/journals/${journalId}/entries`,
-                data,
-                config
-            )
+            this.spireClient.post(`/journals/${journalId}/entries`, data, config)
         )
         return BugoutTypes.journalEntryUnpacker(response)
     }
@@ -570,26 +495,20 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutJournalEntry> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
-            this.spireClient.get(
-                `/journals/${journalId}/entries/${entryId}`,
-                config
-            )
+            this.spireClient.get(`/journals/${journalId}/entries/${entryId}`, config)
         )
         return BugoutTypes.journalEntryUnpacker(response)
     }
 
-    async getEntries(
-        token: string,
-        journalId: string
-    ): Promise<BugoutTypes.BugoutJournalEntries> {
+    async getEntries(token: string, journalId: string): Promise<BugoutTypes.BugoutJournalEntries> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
             this.spireClient.get(`/journals/${journalId}/entries`, config)
@@ -604,18 +523,15 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutJournalEntryContent> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
-            this.spireClient.get(
-                `/journals/${journalId}/entries/${entryId}/content`,
-                config
-            )
+            this.spireClient.get(`/journals/${journalId}/entries/${entryId}/content`, config)
         )
         return {
             title: response.title,
-            content: response.content,
+            content: response.content
         } as BugoutTypes.BugoutJournalEntryContent
     }
 
@@ -630,8 +546,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutJournalEntry> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         if (tagsAction) {
             config["params"] = { tags_action: tagsAction }
@@ -639,14 +555,10 @@ export default class BugoutClient {
         const data = {
             title: title,
             content: content,
-            tags: tags,
+            tags: tags
         }
         const response = await this.caller(
-            this.spireClient.put(
-                `/journals/${journalId}/entries/${entryId}`,
-                data,
-                config
-            )
+            this.spireClient.put(`/journals/${journalId}/entries/${entryId}`, data, config)
         )
         return BugoutTypes.journalEntryUnpacker(response)
     }
@@ -660,18 +572,14 @@ export default class BugoutClient {
     ): Promise<string[]> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const data = {
-            tags: tags,
+            tags: tags
         }
         const response = await this.caller(
-            this.spireClient.post(
-                `/journals/${journalId}/entries/${entryId}/tags`,
-                data,
-                config
-            )
+            this.spireClient.post(`/journals/${journalId}/entries/${entryId}/tags`, data, config)
         )
         return response
     }
@@ -688,15 +596,15 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutSearchResults> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
             params: {
                 q: query,
                 filters: filters,
                 limit: limit,
                 offset: offset,
-                content: content,
-            },
+                content: content
+            }
         }
         const response = await this.caller(
             this.spireClient.get(`/journals/${journalId}/search`, config)
@@ -714,15 +622,12 @@ export default class BugoutClient {
         const streamResponseType: ResponseType = "stream"
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`
             },
-            responseType: streamResponseType,
+            responseType: streamResponseType
         }
         const response = await this.caller(
-            this.filesClient.get(
-                `/files/${journalId}/entries/${entryId}/images/${imageId}`,
-                config
-            )
+            this.filesClient.get(`/files/${journalId}/entries/${entryId}/images/${imageId}`, config)
         )
         return response
     }
@@ -734,14 +639,11 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutEntryImages> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
-            this.filesClient.get(
-                `/files/${journalId}/entries/${entryId}/images`,
-                config
-            )
+            this.filesClient.get(`/files/${journalId}/entries/${entryId}/images`, config)
         )
         return BugoutTypes.entryImagesUnpacker(response)
     }
@@ -750,26 +652,26 @@ export default class BugoutClient {
         token: string,
         journalId: string,
         entryId: string,
-        image_name: string,
         imagePath: string
     ): Promise<BugoutTypes.BugoutEntryImage> {
+        const imagePathList = imagePath.split("/")
+        const imageName = imagePathList[imagePathList.length - 1]
         const formData = new FormData()
-        formData.append("image", fs.createReadStream(imagePath))
+        formData.append("file", fs.createReadStream(imagePath))
         const config = {
             headers: {
+                Accept: "*/*",
                 Authorization: `Bearer ${token}`,
-                ...formData.getHeaders(),
+                "Content-Type": "multipart/form-data",
+                "Accept-Encoding": "gzip, deflate, br",
+                ...formData.getHeaders()
             },
             params: {
-                image_name: image_name,
-            },
+                image_name: imageName
+            }
         }
         const response = await this.caller(
-            this.filesClient.post(
-                `/files/${journalId}/entries/${entryId}/images`,
-                formData,
-                config
-            )
+            this.filesClient.post(`/files/${journalId}/entries/${entryId}/images`, formData, config)
         )
         return BugoutTypes.entryImageUnpacker(response)
     }
@@ -782,8 +684,8 @@ export default class BugoutClient {
     ): Promise<BugoutTypes.BugoutEntryImage> {
         const config = {
             headers: {
-                Authorization: `Bearer ${token}`,
-            },
+                Authorization: `Bearer ${token}`
+            }
         }
         const response = await this.caller(
             this.filesClient.delete(
