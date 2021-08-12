@@ -330,6 +330,7 @@ export type BugoutEntryImage = {
     journal_id: string
     entry_id: string
     name: string
+    extension: string
     created_at: string
 }
 
@@ -339,6 +340,7 @@ export function entryImageUnpacker(response) {
         journal_id: response.journal_id,
         entry_id: response.entry_id,
         name: response.name,
+        extension: response.extension,
         created_at: response.created_at
     } as BugoutEntryImage
 }
