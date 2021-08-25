@@ -563,6 +563,22 @@ export default class BugoutClient {
         return BugoutTypes.journalEntryUnpacker(response)
     }
 
+    async deleteEntry(
+        token: string,
+        journalId: string,
+        entryId: string
+    ): Promise<BugoutTypes.BugoutJournalEntry> {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const response = await this.caller(
+            this.spireClient.delete(`/journals/${journalId}/entries/${entryId}`, config)
+        )
+        return BugoutTypes.journalEntryUnpacker(response)
+    }
+
     // Journal entry tags handlers
     async createTags(
         token: string,
