@@ -79,7 +79,7 @@ export default class BugoutClient {
             data = `${data}&last_name=${lastName}`
         }
         if (applicationId !== undefined) {
-            data = `${data}&application_id=${lastName}`
+            data = `${data}&application_id=${applicationId}`
         }
         const response = await this.caller(this.broodClient.post("/user", data, config))
         return BugoutTypes.userUnpacker(response)
