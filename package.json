@@ -2,8 +2,8 @@
     "name": "@bugout/bugout-js",
     "version": "0.0.11",
     "description": "JavaScript client library for Bugout API",
-    "main": "app.js",
-    "types": "app.d.ts",
+    "main": "src/@types/app.js",
+    "types": "src/@types/app.d.ts",
     "scripts": {
         "build": "tsc",
         "format": "prettier --write src",
