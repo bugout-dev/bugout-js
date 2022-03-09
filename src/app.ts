@@ -448,7 +448,7 @@ export default class BugoutClient {
                 Authorization: `Bearer ${token}`
             }
         }
-        const response = await this.caller(this.spireClient.get("/journals", config))
+        const response = await this.caller(this.spireClient.get("/journals/", config))
         return BugoutTypes.journalsUnpacker(response)
     }
 
