@@ -63,7 +63,8 @@ export default class BugoutClient {
         email: string,
         password: string,
         firstName?: string,
-        lastName?: string
+        lastName?: string,
+        applicationId?: string
     ): Promise<BugoutTypes.BugoutUser> {
         const config = {
             headers: {
@@ -76,6 +77,9 @@ export default class BugoutClient {
         }
         if (lastName !== undefined) {
             data = `${data}&last_name=${lastName}`
+        }
+        if (applicationId !== undefined) {
+            data = `${data}&application_id=${applicationId}`
         }
         const response = await this.caller(this.broodClient.post("/user", data, config))
         return BugoutTypes.userUnpacker(response)
