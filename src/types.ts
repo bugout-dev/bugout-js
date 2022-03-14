@@ -35,6 +35,7 @@ export function userUnpacker(response): BugoutUser {
         last_name: response.last_name,
         email: response.email,
         normalized_email: response.normalized_email,
+        application_id: response.application_id,
         verified: response.verified,
         created_at: response.created_at,
         updated_at: response.updated_at
