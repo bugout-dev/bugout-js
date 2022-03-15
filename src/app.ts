@@ -7,7 +7,7 @@ import * as BugoutTypes from "./types"
 import { bugoutBroodUrl, bugoutSpiredUrl, bugoutFilesUrl } from "./constants"
 
 export class BugoutResponseError extends Error {
-    private statusCode: number
+    public statusCode: number
     constructor(name: string, statusCode: number, message?: string) {
         super(message)
         this.name = name
@@ -374,14 +374,10 @@ export default class BugoutClient {
     async findFirstResource(token: string, params?: any): Promise<BugoutTypes.BugoutResource> {
         const list = await this.listResources(token, params)
         if (list.resources.length == 0) {
-            throw new BugoutResponseError(
-                "No resources found",
-                404,
-                "Predicate found no resources"
-            )
+            throw new BugoutResponseError("No resources found", 404, "Predicate found no resources")
         } else {
             const resourceId = list.resources[0].id
-            const resource = await this.getResource(token,resourceId);
+            const resource = await this.getResource(token, resourceId)
             return resource
         }
     }
