@@ -6,6 +6,15 @@ import FormData from "form-data"
 import * as BugoutTypes from "./types"
 import { bugoutBroodUrl, bugoutSpiredUrl, bugoutFilesUrl } from "./constants"
 
+export class BugoutClientApiError extends Error {
+    private statusCode: number
+    constructor(name: string, statusCode: number, message?: string) {
+        super(message)
+        this.name = name
+        this.statusCode = statusCode
+    }
+}
+
 export default class BugoutClient {
     private broodClient: AxiosInstance
     private spireClient: AxiosInstance
@@ -360,6 +369,21 @@ export default class BugoutClient {
         }
         const response = await this.caller(this.broodClient.get(`/resources/${resourceId}`, config))
         return BugoutTypes.resourceUnpacker(response)
+    }
+
+    async findFirstResource(token: string, params?: any): Promise<BugoutTypes.BugoutResource> {
+        const list = await this.listResources(token, params)
+        if (list.resources.length == 0) {
+            throw new BugoutClientApiError(
+                "No resources found",
+                404,
+                "Predicate found no resources"
+            )
+        } else {
+            const resourceId = list.resources[0].id
+            const resource = await this.getResource(token,resourceId);
+            return resource
+        }
     }
 
     async updateResource(
