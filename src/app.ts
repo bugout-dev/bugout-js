@@ -6,7 +6,7 @@ import FormData from "form-data"
 import * as BugoutTypes from "./types"
 import { bugoutBroodUrl, bugoutSpiredUrl, bugoutFilesUrl } from "./constants"
 
-export class BugoutClientApiError extends Error {
+export class BugoutResponseError extends Error {
     private statusCode: number
     constructor(name: string, statusCode: number, message?: string) {
         super(message)
@@ -374,7 +374,7 @@ export default class BugoutClient {
     async findFirstResource(token: string, params?: any): Promise<BugoutTypes.BugoutResource> {
         const list = await this.listResources(token, params)
         if (list.resources.length == 0) {
-            throw new BugoutClientApiError(
+            throw new BugoutResponseError(
                 "No resources found",
                 404,
                 "Predicate found no resources"
